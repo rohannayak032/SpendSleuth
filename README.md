@@ -17,7 +17,7 @@ is built around category breakdowns from the start.
 ## Features
 
 - [x] Database schema
-- [ ] Keyword-based categorizer
+- [x] Keyword-based categorizer
 - [ ] Email parser
 - [ ] Gmail OAuth integration
 - [ ] Transaction API (CRUD)
