@@ -60,15 +60,18 @@ SpendSleuth/
 │       └── agent-rules.md   # Project-specific development rules
 ├── backend/                  # Node.js backend services & API
 │   ├── src/
+│   │   ├── config/          # Centralized environment & configuration loader
 │   │   ├── db/              # Database connection, schemas, and migrations
 │   │   ├── services/        # Ingestion, regex parser prototype, categorizer
 │   │   ├── routes/          # Express REST API endpoints (planned)
 │   │   └── index.js         # Backend server entrypoint (planned)
+│   ├── tests/               # Automated unit and integration test suites
 │   ├── package.json         # Backend package configuration
 │   └── expenses.db          # Local SQLite database (gitignored)
 ├── frontend/                 # React web dashboard (planned)
 │   ├── src/                 # UI components, analytics charts, transaction tables
 │   └── package.json         # Frontend dependencies (planned)
+├── .env.example              # Environment variables template
 ├── README.md                 # Project documentation
 └── LICENSE                   # MIT License
 ```
@@ -81,6 +84,7 @@ SpendSleuth/
 - Node.js
 - Express
 - SQLite / `better-sqlite3`
+- `dotenv`
 
 ### Planned
 - Gmail API / OAuth2
@@ -93,6 +97,8 @@ SpendSleuth/
 
 - [x] Database schema (`backend/src/db/`)
 - [x] Keyword-based categorizer (`backend/src/services/categorizer.js`)
+- [x] Centralized environment configuration (`backend/src/config/`)
+- [x] Automated testing foundation (`backend/tests/`)
 - [ ] Email parser (`backend/src/services/parser.js` currently has a prototype parser supporting a Swiggy Dineout email format; generalized multi-format parsing is in progress)
 - [ ] Email pre-processing and validation layer
 - [ ] LLM extraction fallback engine
@@ -103,9 +109,20 @@ SpendSleuth/
 
 ---
 
-## Setup
+## Setup & Configuration
 
-SpendSleuth is currently under active development and does not yet have a complete runnable application. Setup instructions will be provided once the core services and entrypoints are integrated.
+1. **Configure Environment Variables**:
+   Copy `.env.example` to `.env` in the repository root (or inside `backend/.env`):
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` to configure port, database location, and API credentials as needed.
+
+2. **Run Backend Tests**:
+   ```bash
+   cd backend
+   npm test
+   ```
 
 ---
 
