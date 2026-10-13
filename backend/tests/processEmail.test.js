@@ -88,6 +88,77 @@ describe('processEmail – end-to-end transaction processing', () => {
     });
   });
 
+  describe('Successful processing (Uber, Ola, Amazon, Flipkart)', () => {
+    test('should process confirmed Uber ride receipt and categorize as Transport', () => {
+      const result = processEmail(
+        {
+          subject: 'Your Monday evening trip with Uber',
+          body: 'Thanks for riding with us. Total: ₹342.50. Paid via Credit Card.',
+          gmailMessageId: 'msg-uber-001',
+          receivedDate: '2026-10-12T19:45:00Z',
+        },
+        repo
+      );
+
+      assert.strictEqual(result.status, 'created');
+      assert.strictEqual(result.transaction.amount, 34250, '₹342.50 → 34250 paise');
+      assert.strictEqual(result.transaction.merchant, 'Uber');
+      assert.strictEqual(result.transaction.category, 'Transport');
+      assert.strictEqual(result.transaction.gmail_message_id, 'msg-uber-001');
+    });
+
+    test('should process confirmed Ola ride invoice and categorize as Transport', () => {
+      const result = processEmail(
+        {
+          subject: 'Your Ola ride invoice [CRN8912345]',
+          body: 'Ride completed. Total Bill: ₹420.00. Payment method: Cash.',
+          gmailMessageId: 'msg-ola-001',
+          receivedDate: '2026-10-12T20:30:00Z',
+        },
+        repo
+      );
+
+      assert.strictEqual(result.status, 'created');
+      assert.strictEqual(result.transaction.amount, 42000, '₹420.00 → 42000 paise');
+      assert.strictEqual(result.transaction.merchant, 'Ola');
+      assert.strictEqual(result.transaction.category, 'Transport');
+    });
+
+    test('should process confirmed Amazon payment receipt and categorize as Shopping', () => {
+      const result = processEmail(
+        {
+          subject: 'Payment confirmation for your Amazon order',
+          body: 'Thank you for your order. Amount Paid: Rs. 1,499.00 via Net Banking.',
+          gmailMessageId: 'msg-amazon-002',
+          receivedDate: '2026-10-12T15:00:00Z',
+        },
+        repo
+      );
+
+      assert.strictEqual(result.status, 'created');
+      assert.strictEqual(result.transaction.amount, 149900, 'Rs. 1,499.00 → 149900 paise');
+      assert.strictEqual(result.transaction.merchant, 'Amazon');
+      assert.strictEqual(result.transaction.category, 'Shopping');
+    });
+
+    test('should process confirmed Flipkart payment receipt and categorize as Shopping', () => {
+      const result = processEmail(
+        {
+          subject: 'Payment received for your Flipkart order',
+          body: 'Payment of Rs. 2,499.50 received for order OD123456789. Thank you!',
+          gmailMessageId: 'msg-flipkart-001',
+          receivedDate: '2026-10-12T16:00:00Z',
+        },
+        repo
+      );
+
+      assert.strictEqual(result.status, 'created');
+      assert.strictEqual(result.transaction.amount, 249950, 'Rs. 2,499.50 → 249950 paise');
+      assert.strictEqual(result.transaction.merchant, 'Flipkart');
+      assert.strictEqual(result.transaction.category, 'Shopping');
+    });
+  });
+
   describe('Unsupported email handling', () => {
     test('should return unsupported for non-transaction emails', () => {
       const result = processEmail(
